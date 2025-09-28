@@ -57,7 +57,7 @@ class ApiService {
       return;
     } else {
 
-      print("⚠️ Delete di server gagal dengan code ${response.statusCode}");
+      print("Delete di server gagal dengan code ${response.statusCode}");
     }
   }
 
