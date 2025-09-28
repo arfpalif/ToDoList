@@ -34,14 +34,29 @@ class TodoController with ChangeNotifier {
 
   Future<void> addTodo(Todo todo) async {
     try {
-      final newTodo = await apiService.addTodo(todo);
+      // generate ID lokal (biar gak ikut ID dari API palsu)
+      final newId = _todos.isEmpty
+          ? 1
+          : (_todos.map((t) => t.id ?? 0).reduce((a, b) => a > b ? a : b) + 1);
+
+      final newTodo = Todo(
+        id: newId,
+        userId: todo.userId,
+        title: todo.title,
+        completed: todo.completed,
+      );
 
       _todos.insert(0, newTodo);
+      await _saveToStorage(); // simpan ke lokal
       notifyListeners();
+
+      // simulasi call API (walau gak ngefek)
+      await apiService.addTodo(newTodo);
     } catch (e) {
       print("Error add: $e");
     }
   }
+
   //mengambil index ke berapa, lalu menjalankan variabel newTitle, yang dibalik nilainya menjadi sesuai input
   Future<void> updateTitle(Todo todo, String newTitle) async {
     try {
@@ -113,21 +128,25 @@ class TodoController with ChangeNotifier {
   //mengambil index ke berapa, lalu menjalankan remove, dan mencoba function delete di Apiservice, dan savetostorage untuk simulasi via lokal
   Future<void> deleteTodo(int id) async {
     final idx = _todos.indexWhere((t) => t.id == id);
-    if (idx == -1) return;
+    if (idx == -1) {
+      print("Delete gagal: id $id tidak ditemukan di local list");
+      return;
+    }
 
     final removed = _todos.removeAt(idx);
+    await _saveToStorage();
     notifyListeners();
 
     try {
+      // panggil API tapi abaikan kalau gagal
       await apiService.deleteTodo(id);
-      await _saveToStorage();
     } catch (e) {
-      _todos.insert(idx, removed);
-      notifyListeners();
-      print("Delete failed, rollback: $e");
-      rethrow;
+      print("⚠️ API delete gagal, tapi lokal tetap dihapus: $e");
+      // ga perlu rollback, biarin aja
     }
   }
+
+
 
   Future<void> _saveToStorage() async {
     final prefs = await SharedPreferences.getInstance();

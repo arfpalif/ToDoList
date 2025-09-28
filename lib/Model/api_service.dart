@@ -53,8 +53,12 @@ class ApiService {
   Future<void> deleteTodo(int id) async {
     final response = await http.delete(Uri.parse("$baseUrl/todos/$id"));
 
-    if (response.statusCode != 200) {
-      throw Exception("Gagal menghapus todo");
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      return;
+    } else {
+      // jangan throw Exception kalau API palsu
+      print("⚠️ Delete di server gagal dengan code ${response.statusCode}");
     }
   }
+
 }
