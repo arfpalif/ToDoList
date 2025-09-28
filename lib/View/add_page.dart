@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:to_do_list/Controller/todo_controller.dart';
 import 'package:to_do_list/Model/todo.dart';
-import '../Model/api_service.dart';
 
 class addPage extends StatefulWidget {
   const addPage({super.key});
@@ -37,7 +36,7 @@ class _addPageState extends State<addPage> {
 
                 final newTask = Todo(
                   userId: 1,
-                  id: DateTime.now().millisecondsSinceEpoch, // biar unik lokal
+                  id: DateTime.now().millisecondsSinceEpoch,
                   title: titleController.text,
                   completed: false,
                 );

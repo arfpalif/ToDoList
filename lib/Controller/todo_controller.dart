@@ -15,27 +15,19 @@ class TodoController with ChangeNotifier {
 
   Future<void> fetchTodos() async {
     try {
-      // 1) fetch remote (read-only, mock)
       final remote = await apiService.getTodos();
-
-      // 2) load persisted local list (if ada)
       final local = await _loadFromStorage();
 
       if (local.isNotEmpty) {
-        // prefer local simulated changes — tampilkan local paling atas
         _todos = [...local];
-        // optional: append remote items that not exist in local by id (avoid duplicates)
         final localIds = _todos.map((t) => t.id).toSet();
         _todos.addAll(remote.where((r) => !localIds.contains(r.id)));
       } else {
-        // no local simulation -> show remote (limit jika mau)
         _todos = remote;
       }
-
       notifyListeners();
     } catch (e) {
       print("Error fetch: $e");
-      // bisa rethrow atau handle UI
     }
   }
 
@@ -80,9 +72,7 @@ class TodoController with ChangeNotifier {
     notifyListeners();
 
     try {
-      // call API for consistency (will return mock)
       final server = await apiService.updateTodo(updatedTodo);
-      // server may return different data; reconcile id if needed
       _todos[idx] = Todo(
         id: server.id != 0 ? server.id : updatedTodo.id,
         userId: server.userId,
@@ -92,7 +82,6 @@ class TodoController with ChangeNotifier {
       await _saveToStorage();
       notifyListeners();
     } catch (e) {
-      // rollback on error
       _todos[idx] = old;
       notifyListeners();
       print("Update failed, rollback: $e");
@@ -111,7 +100,7 @@ class TodoController with ChangeNotifier {
       final index = _todos.indexWhere((t) => t.id == todo.id);
       if (index != -1) {
         _todos[index] = updated;
-        notifyListeners(); // << penting
+        notifyListeners();
       }
       await apiService.updateTodo(updated);
     } catch (e) {
@@ -130,7 +119,6 @@ class TodoController with ChangeNotifier {
       await apiService.deleteTodo(id);
       await _saveToStorage();
     } catch (e) {
-      // rollback if failed
       _todos.insert(idx, removed);
       notifyListeners();
       print("Delete failed, rollback: $e");
@@ -152,7 +140,6 @@ class TodoController with ChangeNotifier {
     return data.map((e) => Todo.fromJson(e)).toList();
   }
 
-  // optional: clear local simulation (for testing)
   Future<void> clearLocalSimulation() async {
     _todos = [];
     final prefs = await SharedPreferences.getInstance();
