@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     Future.microtask(() =>
         Provider.of<TodoController>(context, listen: false).fetchTodos());
   }
-
+  //membuat view widgets untuk list
   @override
   Widget build(BuildContext context) {
     final todoController = Provider.of<TodoController>(context);
@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
           if (controller.todos.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
+          //membuat listView
           return ListView.builder(
             itemCount: controller.todos.length,
             itemBuilder: (context, index) {
@@ -43,6 +44,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     PopupMenuButton<String>(
                       onSelected: (value) {
+                        //jika klik tombol tandai selesai / belum selesai maka jalankan function toggle status
                         if (value == "toggle") {
                           todoController.toggleStatus(todo);
                         } else if (value == "edit") {
@@ -99,6 +101,8 @@ class _HomePageState extends State<HomePage> {
           );
         },
       ),
+
+      //FAB / Button untuk add tugas, yang akan dialihkan ke halaman add tugas baru
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
         tooltip: 'Increment',

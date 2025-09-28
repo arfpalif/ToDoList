@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
+  //alur dimulai dari sini menjalankan halaman homePage()
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

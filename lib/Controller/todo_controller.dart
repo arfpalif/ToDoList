@@ -13,6 +13,7 @@ class TodoController with ChangeNotifier {
 
   static const String _storageKey = 'local_todos_v1';
 
+  //mengambil data dari remote dan local dengan menjalankan 2 function getTodos untuk remote, dan loadFromstorage untuk local
   Future<void> fetchTodos() async {
     try {
       final remote = await apiService.getTodos();
@@ -41,7 +42,7 @@ class TodoController with ChangeNotifier {
       print("Error add: $e");
     }
   }
-
+  //mengambil index ke berapa, lalu menjalankan variabel newTitle, yang dibalik nilainya menjadi sesuai input
   Future<void> updateTitle(Todo todo, String newTitle) async {
     try {
       final updated = Todo(
@@ -89,6 +90,7 @@ class TodoController with ChangeNotifier {
     }
   }
 
+  //mengambil index ke berapa, lalu menjalankan variabel completed, yang dibalik nilainya menjadi true / false
   Future<void> toggleStatus(Todo todo) async {
     try {
       final updated = Todo(
@@ -108,6 +110,7 @@ class TodoController with ChangeNotifier {
     }
   }
 
+  //mengambil index ke berapa, lalu menjalankan remove, dan mencoba function delete di Apiservice, dan savetostorage untuk simulasi via lokal
   Future<void> deleteTodo(int id) async {
     final idx = _todos.indexWhere((t) => t.id == id);
     if (idx == -1) return;

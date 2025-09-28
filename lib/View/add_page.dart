@@ -30,6 +30,8 @@ class _addPageState extends State<addPage> {
               ),
             ),
             const SizedBox(height: 20),
+
+            //logic btn nya, mengecek apakah textnya ada / kosong, jika ada maka ambil nilai dari input, dan mencoba menghubungkan ke controller di function addTodo
             ElevatedButton(
               onPressed: () async {
                 if (titleController.text.isEmpty) return;
@@ -45,7 +47,7 @@ class _addPageState extends State<addPage> {
                   await Provider.of<TodoController>(context, listen: false)
                       .addTodo(newTask);
 
-                  Navigator.pop(context); // balik ke homepage
+                  Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Tugas berhasil ditambahkan!")),
                   );
