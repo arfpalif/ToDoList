@@ -56,7 +56,7 @@ class ApiService {
     if (response.statusCode == 200 || response.statusCode == 204) {
       return;
     } else {
-      // jangan throw Exception kalau API palsu
+
       print("⚠️ Delete di server gagal dengan code ${response.statusCode}");
     }
   }
